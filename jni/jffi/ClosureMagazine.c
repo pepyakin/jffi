@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * 
+ *
  * Alternatively, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -99,7 +99,7 @@ Java_com_kenai_jffi_Foreign_newClosureMagazine(JNIEnv *env, jobject self, jlong 
         snprintf(errmsg, sizeof(errmsg), "failed to allocate a page. errno=%d (%s)", errno, strerror(errno));
         goto error;
     }
-    
+
     // Thread all the closure handles onto a list, and init each one
     for (i = 0; i < nclosures; ++i) {
         Closure* closure = &list[i];
@@ -110,7 +110,7 @@ Java_com_kenai_jffi_Foreign_newClosureMagazine(JNIEnv *env, jobject self, jlong 
             goto error;
         }
     }
-    
+
 
     if (!jffi_makePagesExecutable(code, 1)) {
         snprintf(errmsg, sizeof(errmsg), "failed to make page executable. errno=%d (%s)", errno, strerror(errno));
@@ -182,7 +182,7 @@ Java_com_kenai_jffi_Foreign_closureMagazineGet(JNIEnv *env, jobject self, jlong 
             throwException(env, IllegalArgument, "could not obtain reference to java object");
             return 0L;
         }
-        
+
         magazine->nextclosure++;
         return p2j(closure);
     }
@@ -198,7 +198,7 @@ closure_begin(Closure* closure, JNIEnv** penv, bool* detach)
     JavaVM* jvm = closure->magazine->jvm;
 
     *detach = (*jvm)->GetEnv(jvm, (void **)penv, JNI_VERSION_1_4) != JNI_OK
-        && (*jvm)->AttachCurrentThreadAsDaemon(jvm, (void **)penv, NULL) == JNI_OK;
+        && (*jvm)->AttachCurrentThreadAsDaemon(jvm, penv, NULL) == JNI_OK;
 
 #ifndef _WIN32
     if (*detach && thread_data_get()->attach_count++ >= THREAD_ATTACH_THRESHOLD) {
@@ -206,7 +206,7 @@ closure_begin(Closure* closure, JNIEnv** penv, bool* detach)
         *detach = false;
     }
 #endif
-    
+
     if ((**penv)->ExceptionCheck(*penv)) {
         (**penv)->ExceptionClear(*penv);
     }
@@ -239,7 +239,7 @@ static void
 closure_invoke(ffi_cif* cif, void* retval, void** parameters, void* user_data)
 {
     Closure* closure = (Closure *) user_data;
-    
+
     JNIEnv* env;
     int i;
     bool detach;
