@@ -234,6 +234,22 @@
   </target>
 
 
+  <target name="android-x86_64" depends="-init, -generate-native-headers">
+    <mkdir dir="${build.native.dir}"/>
+
+    <exec executable="${make.exe}" failonerror="true">
+      <arg value="JAVA_HOME=${java.home}"/>
+      <arg value="OS=cross-android-x86_64"/>
+      <arg value="SRC_DIR=${src.native.dir}"/>
+      <arg value="JNI_DIR=${src.native.dir}"/>
+      <arg value="BUILD_DIR=${build.native.dir}"/>
+      <arg value="VERSION=${jffi.version.major}.${jffi.version.minor}"/>
+      <arg value="CPU=x86_64"/>
+      <arg value="-f"/>
+      <arg value="jni/GNUmakefile"/>
+    </exec>
+  </target>
+
   <target name="cross-win32" depends="-init, -generate-native-headers">
     <mkdir dir="${build.native.dir}"/>
 

@@ -97,7 +97,7 @@ ifeq ($(OS), win64)
   PICFLAGS=
   SOFLAGS += -shared -static-libgcc
   PREFIX =
-  JNIEXT=dll  
+  JNIEXT=dll
   AR = x86_64-w64-mingw32-ar
   LD = x86_64-w64-mingw32-ld
   STRIP = x86_64-w64-mingw32-strip --strip-debug
@@ -135,6 +135,23 @@ ifeq ($(OS),cross-win64)
   JNIEXT=dll
 endif
 
+ifeq ($(OS),cross-android-x86_64)
+  override CPU = x86_64
+  override OS = linux
+  JDK_INCLUDES=-I$(JNI_DIR)/linux/include -I$(JNI_DIR)/linux/include/linux -I/Users/pepyakin/dev/etc/rust-ios-android/NDK/x86_64/sysroot/usr/include/
+  CC = x86_64-linux-android-gcc
+  LD = x86_64-linux-android-ld
+  STRIP = x86_64-linux-android-strip --strip-debug
+  AR = x86_64-linux-android-ar
+  export RANLIB = x86_64-linux-android-ranlib
+  CONFIGURE_HOST = x86_64-linux-android
+  PICFLAGS =
+  CROSS_COMPILE=1
+  SOFLAGS += -shared -static-libgcc
+  PREFIX=lib
+  JNIEXT=so
+  CFLAGS += -D__BIONIC__
+endif
 
 ifneq ($(findstring cygwin,$(BUILD_OS)),)
   OS = win32
@@ -332,7 +349,7 @@ $(LIBFFI):
 		printf "#endif\n";\
 	) > $(LIBFFI_BUILD_DIR)/include/ffitarget.h
 else
-$(LIBFFI):		
+$(LIBFFI):
 	@mkdir -p $(LIBFFI_BUILD_DIR)
 	@if [ ! -f $(LIBFFI_BUILD_DIR)/Makefile ]; then \
 	    echo "Configuring libffi for $(PLATFORM)"; \
